@@ -1,0 +1,204 @@
+﻿@model Test2Final.Models.StudentModel
+
+@{
+    ViewBag.Title = "AddorEdit";
+}
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#marksField').on('input', function () {
+                updateStatus();
+            });
+
+            $('#minMarksField').on('input', function () {
+                // updateStatus();
+            });
+
+            $('#maxMarksField').on('input', function () {
+                //updateStatus();
+            });
+
+            function updateStatus() {
+                var minMarks = parseInt($('#minMarksField').val());
+                var maxMarks = parseInt($('#maxMarksField').val());
+                var marks = parseInt($('#marksField').val());
+                debugger;
+                if (marks == null || marks == "" || isNaN(marks)) {
+                    $('#statusField').val("");
+                }
+                else if (marks > maxMarks) {
+                    $('#statusField').val('Invalid Input');
+                } else {
+                    var status = marks >= minMarks && marks <= maxMarks ? 'Pass' : 'Fail';
+                    $('#statusField').val(status);
+                }
+            }
+
+            $('#cancelButton').on('click', function () {
+                // Reset input values to empty
+                $('#admnNoField').val('');
+                $('#subjectNameField').val('');
+                $('#maxMarksField').val('');
+                $('#minMarksField').val('');
+                $('#marksField').val('');
+                $('#statusField').val('');
+            });
+
+
+            $('form').submit(function (e) {
+                var status = $('#statusField').val();
+                var adm = document.getElementById("admnNoField");
+                var sub = document.getElementById("subjectNameField");
+                var max = document.getElementById("maxMarksField");
+                var min = document.getElementById("minMarksField");
+
+
+                if (adm == null || adm == "" || isNaN(adm)) {
+
+                    return;
+                }
+                if (sub == null || sub == "" || isNaN(sub)) {
+
+                    return;
+                }
+                if (max == null || max == "" || isNaN(max)) {
+
+                    return;
+                }
+                if (min == null || min == "" || isNaN(min)) {
+
+                    return;
+                }
+
+                if (status !== 'Pass' && status !== 'Fail') {
+                    e.preventDefault(); // Prevent form submission
+                    alert('Please enter a valid input for marks.');
+                } else {
+                    alert('Record Saved Successfully');
+                }
+            });
+
+        });
+    </script>
+    @*  *@
+
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 85vh;
+        }
+
+        .form-wrapper {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .btn-group input[type="submit"],
+            .btn-group input[type="button"] {
+                flex: 1;
+                margin-right: 10px;
+            }
+    </style>
+</head>
+
+<div class="container">
+    <div class="form-wrapper">
+        <h2 style="text-align:center; color:purple"><u>Student Record</u></h2>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.id)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.admnNo, "Admission No. :", htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.admnNo, new { htmlAttributes = new { @class = "form-control", id = "admnNoField", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.admnNo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.subjectName, "Subject : ", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.subjectName, new { htmlAttributes = new { @class = "form-control", id = "subjectNameField", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.subjectName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.maxMarks, "Max Marks : ", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.maxMarks, new { htmlAttributes = new { @class = "form-control", id = "maxMarksField", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.maxMarks, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.minMarks, "Min Marks : ", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.minMarks, new { htmlAttributes = new { @class = "form-control", id = "minMarksField", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.minMarks, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.marks, "Marks : ", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.marks, new { htmlAttributes = new { @class = "form-control", id = "marksField", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.marks, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.status, "Status : ", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.status, new { htmlAttributes = new { @class = "form-control", @readOnly = "readonly", id = "statusField", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.status, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+
+                        <input type="submit" value="Save" class="btn btn-success"/>
+                        &nbsp;
+                        <input type="button" value="Cancel" class="btn btn-danger" id="cancelButton" />
+                    </div>
+                </div>
+
+
+                <div style="text-align: right">
+                    <a href="@Url.Action("Index")" class="btn btn-info">Back to List</a>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@*<script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@
+
+
